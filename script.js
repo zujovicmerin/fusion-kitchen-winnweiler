@@ -46,7 +46,23 @@
  const targets=[...document.querySelectorAll('.reveal')];
  if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}})},{rootMargin:'0px 0px -35px 0px',threshold:.06});targets.forEach(el=>observer.observe(el));}else targets.forEach(el=>el.classList.add('is-visible'));
  const video=document.querySelector('.kitchen-video');
- if(video){if(reducedMotion.matches||navigator.connection?.saveData){video.removeAttribute('autoplay');video.pause();}else if('IntersectionObserver' in window){const vidObs=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting){video.play().catch(()=>{});}else video.pause();}},{threshold:.15});vidObs.observe(video);}else video.play().catch(()=>{});}
+ if(video){
+  video.muted=true;
+  if(reducedMotion.matches||navigator.connection?.saveData){video.removeAttribute('autoplay');video.pause();}
+  if('IntersectionObserver' in window){
+   const vidObs=new IntersectionObserver(entries=>{
+    for(const e of entries){
+     if(e.isIntersecting){
+      if(!reducedMotion.matches&&!navigator.connection?.saveData)video.play().catch(()=>{});
+     }else{
+      video.pause();
+      video.muted=true;
+     }
+    }
+   },{threshold:.15});
+   vidObs.observe(video);
+  }else if(!reducedMotion.matches&&!navigator.connection?.saveData)video.play().catch(()=>{});
+ }
  const soundToggle=document.querySelector('.kitchen-sound-toggle');
  if(video&&soundToggle){
   function updateSoundToggle(){
@@ -63,6 +79,13 @@
    if(!video.muted&&video.paused)video.play().catch(()=>{});
   });
   video.addEventListener('volumechange',updateSoundToggle);
+ }
+ const replayButton=document.querySelector('.kitchen-replay');
+ if(video&&replayButton){
+  replayButton.addEventListener('click',()=>{
+   video.currentTime=0;
+   video.play().catch(()=>{});
+  });
  }
  const sections=[...document.querySelectorAll('main > section[id]')];
  if('IntersectionObserver' in window){const navObs=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;document.querySelectorAll('.desktop-nav a').forEach(link=>{if(link.hash==='#'+entry.target.id)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});}},{rootMargin:'-25% 0px -58% 0px'});sections.forEach(s=>navObs.observe(s));}
