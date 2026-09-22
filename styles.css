@@ -203,7 +203,7 @@
 /* Die Steuerung liegt knapp oberhalb der Bildunterschrift statt über ihr. */
 @media (max-width: 599px) {
   .collage-main .kitchen-video-controls { right: 8px; bottom: 52px; gap: 5px; }
-   @media (max-width: 599px) {
+  } @media (max-width: 599px) {
   .kitchen-video-controls button {
     width: 38px;
     height: 38px;
@@ -213,5 +213,5 @@
     width: 17px;
     height: 17px;
   }
-}
+
 }
