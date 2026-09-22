@@ -47,6 +47,23 @@
  if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}})},{rootMargin:'0px 0px -35px 0px',threshold:.06});targets.forEach(el=>observer.observe(el));}else targets.forEach(el=>el.classList.add('is-visible'));
  const video=document.querySelector('.kitchen-video');
  if(video){if(reducedMotion.matches||navigator.connection?.saveData){video.removeAttribute('autoplay');video.pause();}else if('IntersectionObserver' in window){const vidObs=new IntersectionObserver(entries=>{for(const e of entries){if(e.isIntersecting){video.play().catch(()=>{});}else video.pause();}},{threshold:.15});vidObs.observe(video);}else video.play().catch(()=>{});}
+ const soundToggle=document.querySelector('.kitchen-sound-toggle');
+ if(video&&soundToggle){
+  function updateSoundToggle(){
+   const soundOn=!video.muted;
+   soundToggle.setAttribute('aria-pressed',String(soundOn));
+   soundToggle.setAttribute('aria-label',soundOn?'Ton ausschalten':'Ton einschalten');
+   soundToggle.title=soundOn?'Ton ausschalten':'Ton einschalten';
+  }
+  video.muted=true;
+  updateSoundToggle();
+  soundToggle.addEventListener('click',()=>{
+   video.muted=!video.muted;
+   updateSoundToggle();
+   if(!video.muted&&video.paused)video.play().catch(()=>{});
+  });
+  video.addEventListener('volumechange',updateSoundToggle);
+ }
  const sections=[...document.querySelectorAll('main > section[id]')];
  if('IntersectionObserver' in window){const navObs=new IntersectionObserver(entries=>{for(const entry of entries){if(!entry.isIntersecting)continue;document.querySelectorAll('.desktop-nav a').forEach(link=>{if(link.hash==='#'+entry.target.id)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});}},{rootMargin:'-25% 0px -58% 0px'});sections.forEach(s=>navObs.observe(s));}
  const year=document.getElementById('current-year');if(year)year.textContent=new Date().getFullYear();
