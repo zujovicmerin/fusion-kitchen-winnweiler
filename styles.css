@@ -201,23 +201,26 @@
 .collage-main .kitchen-sound-toggle[aria-pressed="true"] .sound-icon-muted { display: none; }
 .collage-main .kitchen-sound-toggle[aria-pressed="true"] .sound-icon-unmuted { display: block; }
 /* Die Steuerung liegt knapp oberhalb der Bildunterschrift statt über ihr. */
-@media (max-width: 599px) {
-  .collage-main .kitchen-video-controls { right: 8px; bottom: 52px; gap: 5px; }
-  } 
-@media (max-width: 599px) {
+/* VIDEO BUTTONS – MOBILE & TABLET */
+
+@media (max-width: 1024px) {
+
   .collage-main .kitchen-video-controls {
-    right: 8px;
-    bottom: 30px;
-    gap: 5px;
+    right: 10px;
+    bottom: 40px;
+    gap: 6px;
   }
 
-  .kitchen-video-controls button {
+  .collage-main .kitchen-video-controls button {
     width: 30px;
     height: 30px;
+    flex: 0 0 30px;
+    padding: 7px;
   }
 
-  .kitchen-video-controls svg {
+  .collage-main .kitchen-video-controls svg {
     width: 14px;
     height: 14px;
   }
+
 }
