@@ -35,7 +35,16 @@
  if(mobileQuery.addEventListener)mobileQuery.addEventListener('change',()=>setNav(false));
  else mobileQuery.addListener(()=>setNav(false));
  const panels=[...document.querySelectorAll('.food-panel')];
- function activate(panel){panels.forEach(p=>p.classList.toggle('is-active',p===panel));}
+ function activate(panel){
+  const changed=!panel.classList.contains('is-active');
+  panels.forEach(p=>p.classList.toggle('is-active',p===panel));
+  if(changed&&mobileQuery.matches){
+   // Re-ink the period when a closed mobile hero panel opens; do not restart the images.
+   panel.classList.remove('punct-activated');
+   void panel.offsetWidth;
+   panel.classList.add('punct-activated');
+  }
+ }
  panels.forEach((p,i)=>{
   p.addEventListener('pointerenter',()=>{if(!mobileQuery.matches)activate(p)});
   p.addEventListener('focusin',()=>activate(p));
@@ -43,8 +52,20 @@
   p.addEventListener('keydown',e=>{if(e.target!==p)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();activate(p);}if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();panels[(i+1)%panels.length].focus();}if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();panels[(i+panels.length-1)%panels.length].focus();}});
  });
  document.querySelector('.hero-panels').addEventListener('pointerleave',()=>{if(!mobileQuery.matches)panels.forEach(p=>p.classList.remove('is-active'))});
- const targets=[...document.querySelectorAll('.reveal')];
+ const targets=[...document.querySelectorAll('.reveal, .motion-footer, .punct-watch')];
  if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}})},{rootMargin:'0px 0px -35px 0px',threshold:.06});targets.forEach(el=>observer.observe(el));}else targets.forEach(el=>el.classList.add('is-visible'));
+ // Replay the same composed logo sequence when the footer becomes visible, once only.
+ const footerLogo=document.querySelector('.footer-logo');
+ if(footerLogo){
+  if('IntersectionObserver' in window){
+   const footerLogoObserver=new IntersectionObserver(entries=>{
+    for(const entry of entries){
+     if(entry.isIntersecting){entry.target.classList.add('is-visible');footerLogoObserver.unobserve(entry.target);}
+    }
+   },{threshold:.2});
+   footerLogoObserver.observe(footerLogo);
+  }else footerLogo.classList.add('is-visible');
+ }
  const video=document.querySelector('.kitchen-video');
  if(video){
   video.muted=true;

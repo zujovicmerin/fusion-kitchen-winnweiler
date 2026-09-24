@@ -201,26 +201,262 @@
 .collage-main .kitchen-sound-toggle[aria-pressed="true"] .sound-icon-muted { display: none; }
 .collage-main .kitchen-sound-toggle[aria-pressed="true"] .sound-icon-unmuted { display: block; }
 /* Die Steuerung liegt knapp oberhalb der Bildunterschrift statt über ihr. */
-/* VIDEO BUTTONS – MOBILE & TABLET */
+@media (max-width: 599px) {
+  .collage-main .kitchen-video-controls { right: 8px; bottom: 52px; gap: 5px; }
+}
 
-@media (max-width: 1024px) {
 
-  .collage-main .kitchen-video-controls {
-    right: 10px;
-    bottom: 40px;
-    gap: 6px;
+
+/* ================================================================
+   FUSIØN IN MOTION V3 · No external dependencies / no added footage
+   Signature ø and i-dot use LOSSLESS slices of the original logo.
+   Effects are decorative only; all normal interaction stays native.
+   ================================================================ */
+
+/* LOGOS: fixed letters and subline -> ø rotates into place -> i-dot arrives last. */
+.brand-original { width:100%; height:auto; }
+.brand-motion { display:none; position:relative; width:100%; aspect-ratio:571 / 215; }
+.js .brand-original { display:none; }
+.js .brand-motion { display:block; }
+.brand-motion > img { display:block; position:absolute; height:auto; pointer-events:none; }
+.brand-motion .logo-body { width:100%; inset:0 auto auto 0; }
+.brand-motion .logo-o { left:58.844%; top:21.860%; width:18.564%; transform-origin:center; }
+.brand-motion .logo-dot { left:50.263%; top:5.116%; width:6.655%; transform-origin:center 85%; }
+@keyframes fusionOArrives {
+  0%   { opacity:0; transform:translate3d(92%, -80%, 0) rotate(-250deg) scale(1.53); }
+  62%  { opacity:1; }
+  79%  { transform:translate3d(-7%, 3%, 0) rotate(14deg) scale(1.085); }
+  91%  { transform:translate3d(2%, -1%, 0) rotate(-4deg) scale(.99); }
+  100% { opacity:1; transform:translate3d(0, 0, 0) rotate(0) scale(1); }
+}
+@keyframes fusionDotDrops {
+  0%   { opacity:0; transform:translate3d(0, -220%, 0) scale(1.4); }
+  53%  { opacity:1; transform:translate3d(0, 23%, 0) scale(1.1); }
+  76%  { transform:translate3d(0, -15%, 0) scale(.95); }
+  100% { opacity:1; transform:translate3d(0, 0, 0) scale(1); }
+}
+/* Header plays on page load. Footer waits until its logo enters the viewport. */
+.js .brand .brand-motion .logo-o { animation:fusionOArrives 1.90s cubic-bezier(.17,.68,.23,1) .45s both; }
+.js .brand .brand-motion .logo-dot { animation:fusionDotDrops .85s cubic-bezier(.18,.72,.21,1) 2.59s both; }
+.js .footer-logo .brand-motion .logo-o,
+.js .footer-logo .brand-motion .logo-dot { opacity:0; }
+.js .footer-logo.is-visible .brand-motion .logo-o { animation:fusionOArrives 1.90s cubic-bezier(.17,.68,.23,1) .25s both; }
+.js .footer-logo.is-visible .brand-motion .logo-dot { animation:fusionDotDrops .85s cubic-bezier(.18,.72,.21,1) 2.39s both; }
+.footer-logo { display:block; }
+/* Keep the nonanimated intact image for non-JS browsers. */
+@keyframes fusionNavAppears {
+  from { opacity:0; transform:translate3d(0, 12px, 0); }
+  to { opacity:1; transform:translate3d(0,0,0); }
+}
+.js .desktop-nav a, .js .header-visit, .js .mobile-menu-toggle {
+  animation:fusionNavAppears .56s cubic-bezier(.2,.7,.2,1) both;
+}
+.js .desktop-nav a:nth-child(1) { animation-delay:1.29s; }
+.js .desktop-nav a:nth-child(2) { animation-delay:1.40s; }
+.js .desktop-nav a:nth-child(3) { animation-delay:1.51s; }
+.js .desktop-nav a:nth-child(4) { animation-delay:1.62s; }
+.js .header-visit { animation-delay:1.74s; }
+.js .mobile-menu-toggle { animation-delay:1.26s; }
+
+/* No image-covering color sheets: food photography remains visible immediately. */
+/* The existing hover/expanded transformations still govern panel images. */
+@keyframes fusionPanelWords {
+  from { opacity:0; transform:translate3d(0, 32px, 0); }
+  to { opacity:1; transform:translate3d(0,0,0); }
+}
+.js .food-panel .panel-bottom { animation:fusionPanelWords .72s cubic-bezier(.14,.75,.18,1) both; }
+.js .food-panel:nth-child(1) .panel-bottom { animation-delay:.22s; }
+.js .food-panel:nth-child(2) .panel-bottom { animation-delay:.37s; }
+.js .food-panel:nth-child(3) .panel-bottom { animation-delay:.52s; }
+.js .food-panel .panel-top { animation:fusionPanelWords .65s ease-out both; }
+.js .food-panel:nth-child(1) .panel-top { animation-delay:.15s; }
+.js .food-panel:nth-child(2) .panel-top { animation-delay:.30s; }
+.js .food-panel:nth-child(3) .panel-top { animation-delay:.45s; }
+
+/* TITLES: actual masked text, with orange line entering after the first. */
+.motion-heading .motion-line { display:block; overflow:hidden; padding-block:.1em; margin-block:-.1em; }
+.motion-heading .motion-line-inner { display:block; }
+.js .reveal .motion-line-inner {
+  opacity:0; transform:translate3d(0, 115%, 0);
+  transition:opacity .7s ease,transform .91s cubic-bezier(.2,.76,.2,1);
+}
+.js .reveal.is-visible .motion-line-inner { opacity:1; transform:translate3d(0,0,0); }
+.js .reveal.is-visible .motion-line:nth-child(1) .motion-line-inner { transition-delay:.10s; }
+.js .reveal.is-visible .motion-line:nth-child(2) .motion-line-inner { transition-delay:.29s; }
+.js .reveal.is-visible .motion-line:nth-child(3) .motion-line-inner { transition-delay:.47s; }
+
+/* FOOD WORLDS: preserve photo visibility; only zoom + staggered copy. */
+.world-card .world-image { position:relative; }
+@keyframes fusionWorldPhoto {
+  from { transform:scale(1.105); }
+  to { transform:scale(1); }
+}
+.js .world-card.is-visible .world-image img {
+  animation:fusionWorldPhoto 1.15s cubic-bezier(.2,.7,.2,1) .12s backwards;
+}
+.js .world-card .world-text > span,
+.js .world-card .world-text > h3,
+.js .world-card .world-text > p,
+.js .world-card .world-text > a {
+  opacity:0; transform:translate3d(0, 26px, 0);
+  transition:opacity .65s ease,transform .82s cubic-bezier(.2,.72,.18,1);
+}
+.js .world-card.is-visible .world-text > span,
+.js .world-card.is-visible .world-text > h3,
+.js .world-card.is-visible .world-text > p,
+.js .world-card.is-visible .world-text > a { opacity:1; transform:none; }
+.js .world-card.is-visible .world-text > span { transition-delay:.24s; }
+.js .world-card.is-visible .world-text > h3 { transition-delay:.37s; }
+.js .world-card.is-visible .world-text > p { transition-delay:.51s; }
+.js .world-card.is-visible .world-text > a { transition-delay:.63s; }
+.js .world-card.is-visible .world-text > a:hover {
+  transform:translateY(-2px); transition:transform .25s,background .25s,color .25s;
+}
+
+/* MENU: one travelling line. Swiping/clicking/kbd navigation still use menu.js. */
+.js .menu-tabs .menu-indicator {
+  position:absolute; display:block; bottom:0; left:0; height:4px; width:0;
+  border-radius:2px 2px 0 0; background:var(--orange); z-index:2;
+  pointer-events:none; transition:transform .46s cubic-bezier(.23,.78,.17,1),width .46s cubic-bezier(.23,.78,.17,1);
+}
+.js .menu-tab.is-selected { border-bottom-color:transparent; }
+@keyframes fusionMenuDishEnter {
+  from { opacity:0; transform:translate3d(0, 16px, 0); }
+  to { opacity:1; transform:translate3d(0,0,0); }
+}
+.js .menu-results.is-switching .menu-category-intro,
+.js .menu-results.is-switching .menu-group-heading,
+.js .menu-results.is-switching .menu-item {
+  animation:fusionMenuDishEnter .48s cubic-bezier(.2,.78,.2,1) backwards;
+}
+.js .menu-results.is-switching .menu-category-intro { animation-delay:.04s; }
+.js .menu-results.is-switching .menu-group-heading { animation-delay:.095s; }
+.js .menu-results.is-switching .menu-item:nth-child(1) { animation-delay:.11s; }
+.js .menu-results.is-switching .menu-item:nth-child(2) { animation-delay:.14s; }
+.js .menu-results.is-switching .menu-item:nth-child(3) { animation-delay:.17s; }
+.js .menu-results.is-switching .menu-item:nth-child(4) { animation-delay:.20s; }
+.js .menu-results.is-switching .menu-item:nth-child(5) { animation-delay:.23s; }
+
+/* FINALE: dramatic typography without extra art or a scrolling marquee. */
+.footer-mega .footer-motion-row { display:block; overflow:hidden; padding-block:.08em; margin-block:-.08em; }
+.footer-mega .footer-motion-row:first-child,
+.footer-mega .footer-motion-row:first-child .footer-motion-inner { color:#fff; text-shadow:none; }
+.footer-mega .footer-motion-orange,
+.footer-mega .footer-motion-orange .footer-motion-inner { color:var(--orange); }
+.footer-mega .footer-motion-inner { display:block; }
+.js .footer-mega .footer-motion-inner {
+  opacity:0; transform:translate3d(0, 115%, 0);
+  transition:opacity .65s ease,transform 1.1s cubic-bezier(.18,.75,.2,1);
+}
+.js .footer-mega.is-visible .footer-motion-inner { opacity:1; transform:none; }
+.js .footer-mega.is-visible .footer-motion-orange .footer-motion-inner { transition-delay:.29s; }
+
+/* Compact touch layout: only the open pasta panel animates on load. */
+@media (max-width:849px), (max-width:1366px) and (hover:none) and (pointer:coarse) {
+  .js .food-panel:not(.motion-first-panel) .panel-bottom,
+  .js .food-panel:not(.motion-first-panel) .panel-top { animation:none; }
+  .js .world-card .world-text > span,
+  .js .world-card .world-text > h3,
+  .js .world-card .world-text > p,
+  .js .world-card .world-text > a { transform:translate3d(0, 17px, 0); }
+}
+/* Reduced-motion: show complete logos/text/images immediately. */
+@media (prefers-reduced-motion:reduce) {
+  .js .brand-motion .logo-o, .js .brand-motion .logo-dot,
+  .js .desktop-nav a, .js .header-visit, .js .mobile-menu-toggle,
+  .js .food-panel .panel-bottom, .js .food-panel .panel-top,
+  .js .world-card.is-visible .world-image img { animation:none!important; opacity:1!important; transform:none!important; }
+  .js .reveal .motion-line-inner, .js .world-card .world-text > span,
+  .js .world-card .world-text > h3, .js .world-card .world-text > p,
+  .js .world-card .world-text > a, .js .footer-mega .footer-motion-inner {
+    opacity:1!important; transform:none!important; transition:none!important;
   }
+  .js .menu-tabs .menu-indicator { transition:none!important; }
+  .js .menu-results.is-switching .menu-category-intro,
+  .js .menu-results.is-switching .menu-group-heading,
+  .js .menu-results.is-switching .menu-item { animation:none!important; }
+}
 
-  .collage-main .kitchen-video-controls button {
-    width: 30px;
-    height: 30px;
-    flex: 0 0 30px;
-    padding: 7px;
-  }
 
-  .collage-main .kitchen-video-controls svg {
-    width: 14px;
-    height: 14px;
-  }
-
+/* IN MOTION V4 | Punctuation is added AFTER its word/line arrives.
+   Real text glyphs are preserved, no image/SVG/font dependencies.
+   Keep inline-width allocated so nothing jumps on mobile. */
+.punct-mark{display:inline-block;position:relative;white-space:nowrap;transform-origin:50% 88%;}
+/* All non-JS and reduced-motion views display final punctuation normally. */
+@keyframes fusionInkedDot{
+  0%{opacity:0;clip-path:inset(0 100% 0 0);transform:translate3d(-.16em,-.28em,0) rotate(-17deg) scale(.36)}
+  35%{opacity:1;clip-path:inset(0 45% 0 0);transform:translate3d(-.06em,-.11em,0) rotate(-7deg) scale(.83)}
+  76%{opacity:1;clip-path:inset(0 0 0 0);transform:translate3d(0,.025em,0) rotate(2deg) scale(1.09)}
+  100%{opacity:1;clip-path:inset(0 0 0 0);transform:none}
+}
+/* V5: The question mark is already there. Only its final dot drops into place. */
+@keyframes fusionQuestionDot{
+  0%{opacity:0;transform:translate3d(0,-.13em,0) scale(.6)}
+  72%{opacity:1;transform:translate3d(0,.018em,0) scale(1.08)}
+  100%{opacity:1;transform:none}
+}
+/* Header/hero word appears first, its punctuation follows visibly. */
+.js .food-panel .punct-dot{animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) 1.24s both;}
+.js .food-panel:nth-child(2) .punct-dot{animation-delay:1.39s;}
+.js .food-panel:nth-child(3) .punct-dot{animation-delay:1.54s;}
+/* On touch, a category switched open replays ONLY its punctuation, not its image. */
+.js .food-panel.punct-activated .punct-dot{animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) .40s both;}
+/* Display headings arrive line-by-line. Punctuation inks in AFTER each line settles. */
+.js .motion-heading .punct-mark{opacity:0;}
+.js .reveal.is-visible .motion-heading .motion-line:nth-child(1) .punct-dot{
+ animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) 1.10s both;
+}
+.js .reveal.is-visible .motion-heading .motion-line:nth-child(2) .punct-dot{
+ animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) 1.29s both;
+}
+.js .reveal.is-visible .motion-heading .motion-line:nth-child(3) .punct-dot{
+ animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) 1.47s both;
+}
+/* Food cards: let the entire heading appear before its signature period. */
+.js .world-card .punct-dot{opacity:0;}
+.js .world-card.is-visible .punct-dot{
+ animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) 1.29s both;
+}
+/* Show the curved question-mark glyph immediately; reserve its width from the start.
+   The same glyph is duplicated only visually and clipped to the final dot,
+   preserving the exact dot shape of the original display font. */
+.js .punct-watch .punct-question{
+ opacity:1;
+ color:transparent;
+}
+.js .punct-watch .punct-question::before,
+.js .punct-watch .punct-question::after{
+ content:"?";
+ position:absolute;
+ inset:0;
+ font:inherit;
+ line-height:inherit;
+ color:var(--orange);
+ pointer-events:none;
+}
+.js .punct-watch .punct-question::before{
+ clip-path:inset(0 0 24% 0);
+}
+.js .punct-watch .punct-question::after{
+ clip-path:inset(74% 0 0 0);
+ opacity:0;
+ transform-origin:50% 85%;
+}
+.js .punct-watch.is-visible .punct-question::after{
+ animation:fusionQuestionDot .48s cubic-bezier(.2,.75,.26,1) .38s both;
+}
+/* Footer: three dots appear as independent hand-placed finishing touches. */
+.footer-mega .footer-motion-row:first-child .punct-mark{color:inherit;text-shadow:inherit;}
+.js .footer-mega .punct-dot{opacity:0;}
+.js .footer-mega.is-visible .footer-motion-row:first-child .punct-dot{
+ animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) 1.26s both;
+}
+.js .footer-mega.is-visible .footer-motion-row:first-child .punct-dot:nth-of-type(2){animation-delay:1.60s;}
+.js .footer-mega.is-visible .footer-motion-orange .punct-dot{
+ animation:fusionInkedDot .78s cubic-bezier(.18,.65,.22,1) 1.84s both;
+}
+@media(prefers-reduced-motion:reduce){
+ .js .punct-mark{animation:none!important;opacity:1!important;clip-path:none!important;transform:none!important;}
+ .js .punct-watch .punct-question{color:var(--orange)!important;}
+ .js .punct-watch .punct-question::before,.js .punct-watch .punct-question::after{content:none!important;animation:none!important;}
 }

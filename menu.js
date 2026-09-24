@@ -93,14 +93,32 @@ const FUSION_MENU = {
  const mobileQuery=matchMedia('(max-width: 849px), (max-width: 1366px) and (hover: none) and (pointer: coarse)');
  const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
  const categories=tabs.map(tab=>tab.dataset.category);
+ // Orange underline follows the active tab without changing tab widths or swipes.
+ const indicator=document.createElement('span');
+ indicator.className='menu-indicator';indicator.setAttribute('aria-hidden','true');
+ tabList.appendChild(indicator);
+ let indicatorInitialized=false;
+ function positionIndicator(){
+  const selected=tabs.find(tab=>tab.classList.contains('is-selected'));
+  if(!selected)return;
+  if(!indicatorInitialized)indicator.style.transition='none';
+  indicator.style.width=`${selected.getBoundingClientRect().width}px`;
+  indicator.style.transform=`translate3d(${selected.offsetLeft}px,0,0)`;
+  if(!indicatorInitialized){indicatorInitialized=true;requestAnimationFrame(()=>indicator.style.removeProperty('transition'));}
+ }
+ window.addEventListener('resize',positionIndicator,{passive:true});
+ if(document.fonts?.ready)document.fonts.ready.then(positionIndicator);
  let active='pasta',suppressClickUntil=0;
  function render(cat,{scroll=false,direction=0}={}){
   const data=FUSION_MENU[cat];if(!data)return;
   const headerHeight=document.querySelector('.site-header').getBoundingClientRect().height;
   const returnToTop=scroll&&mobileQuery.matches&&container.getBoundingClientRect().top<headerHeight+tabList.offsetHeight;
   const menuTop=menuContent.getBoundingClientRect().top+window.scrollY-headerHeight;
+  const changed=cat!==active;
   active=cat;
   tabs.forEach(t=>{const selected=t.dataset.category===cat;t.classList.toggle('is-selected',selected);t.setAttribute('aria-selected',String(selected));t.tabIndex=selected?0:-1;});
+  positionIndicator();
+  container.classList.toggle('is-switching',changed&&!reducedMotion.matches);
   container.setAttribute('aria-labelledby','tab-'+cat);
   const groups=data.groups.map((g,gidx)=>`<section class="menu-group"><div class="menu-group-heading"><h4>${esc(g.name)}</h4>${g.desc?`<p>${esc(g.desc)}</p>`:''}</div>${g.items.length?`<div class="menu-items">${g.items.map((item,i)=>`<article class="menu-item"><span class="dish-number">${String(i+1).padStart(2,'0')}</span><div class="dish-body"><div class="dish-name-line"><h5>${esc(item.n)}</h5>${item.tag?`<span class="dish-tag">${esc(item.tag)}</span>`:''}</div>${item.r?`<p class="dish-recommendation">Empfehlung: ${esc(item.r)}</p>`:''}${item.d?`<p class="dish-description">${esc(item.d)}</p>`:''}${item.a?`<small class="dish-allergens">Allergene: ${esc(item.a)}</small>`:''}${item.z?`<small class="dish-allergens">Zusatzstoffe: ${esc(item.z)}</small>`:''}</div><strong class="dish-price">${euro(item.p)}</strong></article>`).join('')}</div>`:''}</section>`).join('');
   const eyebrow=esc(data.eyebrow).replace(/^(\d+ \/ )/,'<span class="section-number">$1</span>');
